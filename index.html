@@ -69,7 +69,6 @@
     }
 
     h1 span { color: var(--gold); }
-
     .subtitle { font-size: 1rem; color: var(--muted); font-weight: 300; }
 
     .gold-line {
@@ -132,9 +131,21 @@
 
     .date-tab:hover { border-color: var(--gold); color: var(--gold); }
     .date-tab.active { background: var(--gold); border-color: var(--gold); color: var(--bg); font-weight: 700; }
+    .date-tab.gesloten { border-color: rgba(139,32,32,0.5); color: #e08080; cursor: default; opacity: 0.8; }
+    .date-tab.gesloten:hover { border-color: rgba(139,32,32,0.7); color: #e08080; }
+
+    .gesloten-banner {
+      background: rgba(139,32,32,0.2);
+      border: 1px solid rgba(139,32,32,0.5);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 0.85rem;
+      color: #e08080;
+      margin-bottom: 16px;
+      text-align: center;
+    }
 
     .table-container { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-
     .table-wrap { position: relative; width: 260px; height: 260px; }
 
     .felt-table {
@@ -285,6 +296,10 @@
     <h2 class="panel-title">Inschrijven</h2>
     <p class="panel-sub">Vul je gegevens in en reserveer je stoel</p>
 
+    <div id="geslotenBanner" class="gesloten-banner" style="display:none">
+      🔒 Inschrijvingen voor deze avond zijn gesloten.
+    </div>
+
     <div class="form-group">
       <label for="naam">Jouw naam</label>
       <input type="text" id="naam" placeholder="Voornaam of bijnaam" maxlength="40" />
@@ -320,7 +335,7 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwUXbjt_GhCZ8zKn10WJmearsqempa-FIyNIiWmLVKktuXqoIcGZ66mwWixv6Ffmg50Qg/exec";
 
 let inschrijvingen = {};
-let beschikbareDatums = [];
+let beschikbareDatums = []; // [{ datum, gesloten }, ...]
 let geselecteerdeDatum = null;
 
 function formatDatum(str) {
@@ -337,6 +352,11 @@ function toonToast(msg, fout = false) {
   t.textContent = msg;
   t.className = "toast" + (fout ? " error" : "") + " show";
   setTimeout(() => t.classList.remove("show"), 3500);
+}
+
+function isGesloten(datum) {
+  const info = beschikbareDatums.find(d => d.datum === datum);
+  return info ? info.gesloten : false;
 }
 
 async function apiFetch(actie) {
@@ -359,11 +379,14 @@ async function laadAlles() {
     }
   } catch(e) { console.warn("Spellen laden mislukt:", e); }
 
-  // Laad datums
+  // Laad datums (nu met gesloten-vlag)
   try {
     const data = await apiFetch("getDatums");
     if (data.succes && data.datums) {
-      beschikbareDatums = data.datums;
+      // Ondersteunt zowel oud formaat (strings) als nieuw formaat ({datum, gesloten})
+      beschikbareDatums = data.datums.map(d =>
+        typeof d === "string" ? { datum: d, gesloten: false } : d
+      );
     }
   } catch(e) { console.warn("Datums laden mislukt:", e); }
 
@@ -373,12 +396,14 @@ async function laadAlles() {
     if (data.succes) {
       inschrijvingen = data.datums || {};
       Object.keys(inschrijvingen).forEach(d => {
-        if (!beschikbareDatums.includes(d)) beschikbareDatums.push(d);
+        if (!beschikbareDatums.find(x => x.datum === d)) {
+          beschikbareDatums.push({ datum: d, gesloten: false });
+        }
       });
     }
   } catch(e) { console.warn("Inschrijvingen laden mislukt:", e); }
 
-  beschikbareDatums.sort();
+  beschikbareDatums.sort((a, b) => a.datum.localeCompare(b.datum));
   bouwDatumTabs();
   vulDatumSelect();
 }
@@ -390,12 +415,13 @@ function bouwDatumTabs() {
     container.innerHTML = `<span style="color:var(--muted);font-size:.85rem">Nog geen avonden gepland</span>`;
     return;
   }
-  beschikbareDatums.forEach(datum => {
+  beschikbareDatums.forEach(({ datum, gesloten }) => {
     const btn = document.createElement("button");
-    btn.className = "date-tab";
+    btn.className = "date-tab" + (gesloten ? " gesloten" : "");
     btn.dataset.datum = datum;
     const d = new Date(datum + "T00:00:00");
-    btn.textContent = d.toLocaleDateString("nl-BE", { day: "numeric", month: "short" });
+    const label = d.toLocaleDateString("nl-BE", { day: "numeric", month: "short" });
+    btn.textContent = gesloten ? "🔒 " + label : label;
     btn.onclick = () => selecteerDatum(datum);
     container.appendChild(btn);
   });
@@ -404,10 +430,10 @@ function bouwDatumTabs() {
 function vulDatumSelect() {
   const sel = document.getElementById("datumKeuze");
   sel.innerHTML = '<option value="">— Kies een datum —</option>';
-  beschikbareDatums.forEach(datum => {
+  beschikbareDatums.forEach(({ datum, gesloten }) => {
     const opt = document.createElement("option");
     opt.value = datum;
-    opt.textContent = formatDatum(datum);
+    opt.textContent = (gesloten ? "🔒 " : "") + formatDatum(datum);
     sel.appendChild(opt);
   });
 }
@@ -415,9 +441,15 @@ function vulDatumSelect() {
 function selecteerDatum(datum) {
   geselecteerdeDatum = datum;
   document.querySelectorAll(".date-tab").forEach(t => {
-    t.classList.toggle("active", t.dataset.datum === datum);
+    t.classList.toggle("active", t.dataset.datum === datum && !isGesloten(datum));
   });
   document.getElementById("datumKeuze").value = datum;
+
+  // Toon/verberg gesloten banner en knop
+  const gesloten = isGesloten(datum);
+  document.getElementById("geslotenBanner").style.display = gesloten ? "block" : "none";
+  document.getElementById("inschrijfBtn").disabled = gesloten;
+
   tekenTafel(datum);
 }
 
@@ -426,12 +458,15 @@ function tekenTafel(datum) {
   const sub = document.getElementById("overzicht-sub");
   const deelnemers = inschrijvingen[datum] || [];
   const vrij = 6 - deelnemers.length;
-  sub.textContent = formatDatum(datum);
-  const midden = 130; // helft van 260px
-  const straal = 95;  // afstand van centrum naar stoel
+  const gesloten = isGesloten(datum);
+
+  sub.textContent = formatDatum(datum) + (gesloten ? " 🔒" : "");
+
+  const midden = 130;
+  const straal = 95;
   const stoelHTML = [0,1,2,3,4,5].map(i => {
-    const hoek = (i * 60 - 90) * Math.PI / 180; // start bovenaan, elke 60°
-    const x = midden + straal * Math.cos(hoek) - 26; // -26 = helft stoelbreedte
+    const hoek = (i * 60 - 90) * Math.PI / 180;
+    const x = midden + straal * Math.cos(hoek) - 26;
     const y = midden + straal * Math.sin(hoek) - 26;
     const p = deelnemers[i];
     return p
@@ -440,7 +475,7 @@ function tekenTafel(datum) {
            <span class="chair-name">${escHtml(p.naam)}</span>
            <span class="chair-spel">${escHtml(p.spel)}</span>
          </div></div>`
-      : `<div class="chair" style="left:${x}px;top:${y}px"><div class="chair-inner"><span class="chair-icon" style="opacity:.3">🪑</span></div></div>`;
+      : `<div class="chair" style="left:${x}px;top:${y}px"><div class="chair-inner"><span class="chair-icon" style="opacity:.3">${gesloten ? "🔒" : "🪑"}</span></div></div>`;
   }).join("");
 
   view.innerHTML = `
@@ -448,7 +483,7 @@ function tekenTafel(datum) {
       <div class="felt-table"><div class="felt-table-inner">Speel<br>avond</div></div>
       ${stoelHTML}
     </div>
-    <div class="seats-count"><span>${deelnemers.length}</span>/6 bezet · <span>${vrij}</span> vrij</div>
+    <div class="seats-count"><span>${deelnemers.length}</span>/6 bezet · <span>${vrij}</span> vrij${gesloten ? ' · <span style="color:#e08080">gesloten</span>' : ''}</div>
   `;
 }
 
@@ -462,6 +497,7 @@ async function inschrijven() {
   if (!naam) return toonToast("Vul je naam in.", true);
   if (!datum) return toonToast("Kies een datum.", true);
   if (!spel) return toonToast("Kies of vul een spel in.", true);
+  if (isGesloten(datum)) return toonToast("Inschrijvingen zijn gesloten.", true);
 
   const btn = document.getElementById("inschrijfBtn");
   btn.disabled = true;
