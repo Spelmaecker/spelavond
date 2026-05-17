@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spelavond Planner 🎲</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ===================== RESET & BASE ===================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #1a1208;
+      --surface:   #261b0e;
+      --surface2:  #31230f;
+      --gold:      #d4a030;
+      --gold-light:#f0c060;
+      --cream:     #f5ead8;
+      --muted:     #8a7060;
+      --green:     #3a6b3a;
+      --felt:      #2d5a2d;
+      --felt2:     #1e3e1e;
+      --red:       #8b2020;
+      --radius:    16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===================== NOISE OVERLAY ===================== */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.6;
+    }
+
+    /* ===================== HEADER ===================== */
+    header {
+      text-align: center;
+      padding: 56px 24px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-family: 'Lato', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 6px 18px;
+      border-radius: 40px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    h1 span { color: var(--gold); }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    .gold-line {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 24px auto 0;
+    }
+
+    /* ===================== LAYOUT ===================== */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+      position: relative; z-index: 1;
+    }
+
+    @media (max-width: 800px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    /* ===================== PANELS ===================== */
+    .panel {
+      background: var(--surface);
+      border: 1px solid rgba(212,160,48,0.2);
+      border-radius: var(--radius);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .panel-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+    }
+
+    .panel-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* ===================== DATE SELECTOR ===================== */
+    .date-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .date-tab {
+      padding: 8px 16px;
+      border-radius: 40px;
+      border: 1px solid rgba(212,160,48,0.3);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .date-tab:hover { border-color: var(--gold); color: var(--gold); }
+    .date-tab.active { background: var(--gold); border-color: var(--gold); color: var(--bg); font-weight: 700; }
+
+    /* ===================== TABLE VISUAL ===================== */
+    .table-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .table-wrap {
+      position: relative;
+      width: 260px;
+      height: 260px;
+    }
+
+    /* Felt table */
+    .felt-table {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 140px; height: 140px;
+      background: radial-gradient(circle at 40% 35%, var(--felt), var(--felt2));
+      border-radius: 50%;
+      border: 4px solid #4a7a4a;
+      box-shadow:
+        0 0 0 6px #1a2e1a,
+        0 8px 32px rgba(0,0,0,0.6),
+        inset 0 2px 8px rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .felt-table-inner {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* Chair positions */
+    .chair {
+      position: absolute;
+      width: 52px; height: 52px;
+      transform-origin: center;
+    }
+
+    /* top, bottom, left-top, right-top, left-bottom, right-bottom */
+    .chair:nth-child(1) { top: 4px;  left: 50%; transform: translateX(-50%); }
+    .chair:nth-child(2) { bottom: 4px; left: 50%; transform: translateX(-50%); }
+    .chair:nth-child(3) { top: 30px; left: 10px; }
+    .chair:nth-child(4) { top: 30px; right: 10px; }
+    .chair:nth-child(5) { bottom: 30px; left: 10px; }
+    .chair:nth-child(6) { bottom: 30px; right: 10px; }
+
+    .chair-inner {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      border: 2px solid rgba(212,160,48,0.3);
+      background: var(--surface2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: default;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chair-inner.bezet {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, #2a1f0a, #3d2c0e);
+      box-shadow: 0 0 12px rgba(212,160,48,0.3);
+    }
+
+    .chair-inner.nieuw {
+      animation: newSeat 0.5s ease;
+    }
+
+    @keyframes newSeat {
+      0% { transform: scale(0.5); opacity: 0; }
+      60% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .chair-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .chair-name {
+      font-size: 0.5rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      max-width: 46px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chair-spel {
+      font-size: 0.42rem;
+      color: var(--muted);
+      max-width: 46px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .seats-count {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .seats-count span { color: var(--gold-light); font-weight: 700; }
+
+    /* No date selected state */
+    .no-date-msg {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ===================== FORM ===================== */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--surface2);
+      border: 1px solid rgba(212,160,48,0.2);
+      border-radius: 10px;
+      color: var(--cream);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    input::placeholder { color: var(--muted); }
+
+    select option { background: var(--surface2); }
+
+    .custom-spel-wrap {
+      margin-top: 10px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--gold), #b8861e);
+      border: none;
+      border-radius: 10px;
+      color: var(--bg);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,160,48,0.3); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ===================== TOAST / MESSAGES ===================== */
+    .toast {
+      position: fixed;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--surface);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-size: 0.95rem;
+      color: var(--cream);
+      z-index: 100;
+      transition: transform 0.4s cubic-bezier(.175,.885,.32,1.275);
+      white-space: nowrap;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { border-color: var(--red); }
+
+    /* ===================== LOADING ===================== */
+    .loader {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(212,160,48,0.3);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===================== CONFIG BANNER ===================== */
+    .config-banner {
+      background: rgba(139,32,32,0.3);
+      border: 1px solid var(--red);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .config-banner a { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">🎲 Bordspellenavond</div>
+  <h1>Wie schuift er<br><span>mee aan tafel?</span></h1>
+  <p class="subtitle">Schrijf je in en kies een spelletjesavond</p>
+  <div class="gold-line"></div>
+</header>
+
+<main>
+
+  <!-- ===== LINKER PANEL: OVERZICHT ===== -->
+  <section class="panel">
+    <h2 class="panel-title">Beschikbare avonden</h2>
+    <p class="panel-sub" id="overzicht-sub">Kies een datum om de stoelen te bekijken</p>
+
+    <div class="date-tabs" id="dateTabs">
+      <!-- Dynamisch ingevuld -->
+      <span style="color:var(--muted);font-size:.85rem">Laden<span class="loader"></span></span>
+    </div>
+
+    <div id="tafelView" class="table-container">
+      <div class="no-date-msg">← Kies een datum hierboven</div>
+    </div>
+  </section>
+
+  <!-- ===== RECHTER PANEL: FORMULIER ===== -->
+  <section class="panel">
+    <h2 class="panel-title">Inschrijven</h2>
+    <p class="panel-sub">Vul je gegevens in en reserveer je stoel</p>
+
+    <!-- Toon dit als de API URL nog niet ingesteld is -->
+    <div class="config-banner" id="configBanner" style="display:none">
+      ⚠️ <strong>Instelling nodig:</strong> Open dit bestand en vervang <code>JOUW_SCRIPT_URL</code> door de URL van je Google Apps Script. 
+      <a href="#" target="_blank">Zie instructies onderaan</a>
+    </div>
+
+    <div class="form-group">
+      <label for="naam">Jouw naam</label>
+      <input type="text" id="naam" placeholder="Voornaam of bijnaam" maxlength="40" />
+    </div>
+
+    <div class="form-group">
+      <label for="datumKeuze">Datum</label>
+      <input type="date" id="datumKeuze" />
+    </div>
+
+    <div class="form-group">
+      <label for="spelKeuze">Spel</label>
+      <select id="spelKeuze">
+        <option value="">— Kies een spel —</option>
+        <option value="__custom__">✏️ Zelf invullen…</option>
+      </select>
+      <div class="custom-spel-wrap" id="customSpelWrap" style="display:none">
+        <input type="text" id="customSpel" placeholder="Naam van het spel" maxlength="60" />
+      </div>
+    </div>
+
+    <button class="btn" id="inschrijfBtn" onclick="inschrijven()">
+      Reserveer mijn stoel 🪑
+    </button>
+  </section>
+
+</main>
+
+<!-- Toast notificatie -->
+<div class="toast" id="toast"></div>
+
+<script>
+// =============================================
+// ⚠️  VERVANG DEZE URL MET JOUW APPS SCRIPT URL
+// =============================================
+const API_URL = "https://script.google.com/macros/s/AKfycbwUXbjt_GhCZ8zKn10WJmearsqempa-FIyNIiWmLVKktuXqoIcGZ66mwWixv6Ffmg50Qg/exec";
+// Voorbeeld: "https://script.google.com/macros/s/AKfy.../exec"
+
+// Beschikbare datums (pas aan naar jouw spelavonden)
+// Formaat: "YYYY-MM-DD" of laat leeg voor vrije datumkeuze
+const BESCHIKBARE_DATUMS = [
+  // Voorbeelddatums — vervang door jouw geplande avonden:
+  // "2025-01-17",
+  // "2025-01-24",
+  // "2025-02-07",
+];
+
+// =============================================
+let inschrijvingen = {}; // { "2025-01-17": [{naam, spel}, ...] }
+let geselecteerdeDatum = null;
+
+// Datumopmaak NL
+function formatDatum(str) {
+  const d = new Date(str + "T00:00:00");
+  return d.toLocaleDateString("nl-BE", { weekday: "long", day: "numeric", month: "long" });
+}
+
+// =============================================
+// INIT
+// =============================================
+document.addEventListener("DOMContentLoaded", async () => {
+  if (API_URL === "JOUW_SCRIPT_URL_HIER") {
+    document.getElementById("configBanner").style.display = "block";
+  }
+
+  // Min datum = vandaag
+  const vandaag = new Date().toISOString().split("T")[0];
+  document.getElementById("datumKeuze").min = vandaag;
+
+  await laadSpellen();
+  await laadInschrijvingen();
+  bouwDatumTabs();
+
+  // Custom spel toggle
+  document.getElementById("spelKeuze").addEventListener("change", (e) => {
+    document.getElementById("customSpelWrap").style.display =
+      e.target.value === "__custom__" ? "block" : "none";
+  });
+
+  // Sync datum-tab met formulier datum
+  document.getElementById("datumKeuze").addEventListener("change", (e) => {
+    selecteerDatum(e.target.value);
+  });
+});
+
+// =============================================
+// SPELLEN LADEN
+// =============================================
+async function laadSpellen() {
+  try {
+    const res = await fetch(`${API_URL}?actie=getSpellen`);
+    const data = await res.json();
+    if (data.succes && data.spellen) {
+      const sel = document.getElementById("spelKeuze");
+      data.spellen.forEach(spel => {
+        const opt = document.createElement("option");
+        opt.value = spel;
+        opt.textContent = spel;
+        sel.insertBefore(opt, sel.lastElementChild); // voor "Zelf invullen"
+      });
+    }
+  } catch (e) {
+    console.warn("Spellen laden mislukt:", e);
+  }
+}
+
+// =============================================
+// INSCHRIJVINGEN LADEN
+// =============================================
+async function laadInschrijvingen() {
+  try {
+    const res = await fetch(`${API_URL}?actie=getInschrijvingen`);
+    const data = await res.json();
+    if (data.succes) {
+      inschrijvingen = data.datums || {};
+    }
+  } catch (e) {
+    console.warn("Inschrijvingen laden mislukt:", e);
+  }
+}
+
+// =============================================
+// DATUM TABS
+// =============================================
+function bouwDatumTabs() {
+  const container = document.getElementById("dateTabs");
+  container.innerHTML = "";
+
+  const teTonen = BESCHIKBARE_DATUMS.length > 0
+    ? BESCHIKBARE_DATUMS
+    : Object.keys(inschrijvingen).sort();
+
+  if (teTonen.length === 0) {
+    container.innerHTML = `<span style="color:var(--muted);font-size:.85rem">Nog geen avonden gepland</span>`;
+    return;
+  }
+
+  teTonen.forEach(datum => {
+    const btn = document.createElement("button");
+    btn.className = "date-tab";
+    btn.dataset.datum = datum;
+    const d = new Date(datum + "T00:00:00");
+    btn.textContent = d.toLocaleDateString("nl-BE", { day: "numeric", month: "short" });
+    btn.onclick = () => selecteerDatum(datum);
+    container.appendChild(btn);
+  });
+}
+
+// =============================================
+// DATUM SELECTEREN
+// =============================================
+function selecteerDatum(datum) {
+  geselecteerdeDatum = datum;
+
+  // Update tabs
+  document.querySelectorAll(".date-tab").forEach(t => {
+    t.classList.toggle("active", t.dataset.datum === datum);
+  });
+
+  // Update formulier datum
+  document.getElementById("datumKeuze").value = datum;
+
+  // Teken tafel
+  tekenTafel(datum);
+}
+
+// =============================================
+// TAFEL TEKENEN
+// =============================================
+function tekenTafel(datum) {
+  const view = document.getElementById("tafelView");
+  const sub = document.getElementById("overzicht-sub");
+  const deelnemers = inschrijvingen[datum] || [];
+  const vrij = 6 - deelnemers.length;
+
+  sub.textContent = formatDatum(datum);
+
+  view.innerHTML = `
+    <div class="table-wrap">
+      <div class="felt-table">
+        <div class="felt-table-inner">Speel<br>avond</div>
+      </div>
+      ${[0,1,2,3,4,5].map(i => {
+        const persoon = deelnemers[i];
+        if (persoon) {
+          return `
+            <div class="chair">
+              <div class="chair-inner bezet" title="${persoon.naam} — ${persoon.spel}">
+                <span class="chair-icon">🧑</span>
+                <span class="chair-name">${escHtml(persoon.naam)}</span>
+                <span class="chair-spel">${escHtml(persoon.spel)}</span>
+              </div>
+            </div>`;
+        } else {
+          return `
+            <div class="chair">
+              <div class="chair-inner" title="Vrije stoel">
+                <span class="chair-icon" style="opacity:.3">🪑</span>
+              </div>
+            </div>`;
+        }
+      }).join("")}
+    </div>
+    <div class="seats-count"><span>${deelnemers.length}</span>/6 stoelen bezet · <span>${vrij}</span> vrij</div>
+  `;
+}
+
+// =============================================
+// INSCHRIJVEN
+// =============================================
+async function inschrijven() {
+  const naam = document.getElementById("naam").value.trim();
+  const datum = document.getElementById("datumKeuze").value;
+  const spelSel = document.getElementById("spelKeuze").value;
+  const spelCustom = document.getElementById("customSpel").value.trim();
+  const spel = spelSel === "__custom__" ? spelCustom : spelSel;
+
+  if (!naam) return toonToast("Vul je naam in.", true);
+  if (!datum) return toonToast("Kies een datum.", true);
+  if (!spel) return toonToast("Kies of vul een spel in.", true);
+
+  const btn = document.getElementById("inschrijfBtn");
+  btn.disabled = true;
+  btn.innerHTML = "Bezig met inschrijven… <span class='loader'></span>";
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ naam, datum, spel }),
+    });
+    const data = await res.json();
+
+    if (data.succes) {
+      toonToast(`🎉 ${data.bericht}`);
+      // Update lokaal
+      if (!inschrijvingen[datum]) inschrijvingen[datum] = [];
+      inschrijvingen[datum].push({ naam, spel });
+      // Voeg datum toe aan tabs als nieuw
+      bouwDatumTabs();
+      selecteerDatum(datum);
+      // Markeer nieuwe stoel
+      const stoelen = document.querySelectorAll(".chair-inner");
+      const idx = inschrijvingen[datum].length - 1;
+      if (stoelen[idx]) stoelen[idx].classList.add("nieuw");
+      // Reset form
+      document.getElementById("naam").value = "";
+      document.getElementById("spelKeuze").value = "";
+      document.getElementById("customSpelWrap").style.display = "none";
+    } else {
+      toonToast(data.fout || "Inschrijving mislukt.", true);
+    }
+  } catch (e) {
+    toonToast("Verbindingsfout. Probeer opnieuw.", true);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "Reserveer mijn stoel 🪑";
+}
+
+// =============================================
+// TOAST
+// =============================================
+function toonToast(msg, fout = false) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast" + (fout ? " error" : "") + " show";
+  setTimeout(() => t.classList.remove("show"), 3500);
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+</script>
+</body>
+</html>
