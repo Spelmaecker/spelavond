@@ -157,12 +157,6 @@
     }
 
     .chair { position: absolute; width: 52px; height: 52px; }
-    .chair:nth-child(1) { top: 4px; left: 50%; transform: translateX(-50%); }
-    .chair:nth-child(2) { bottom: 4px; left: 50%; transform: translateX(-50%); }
-    .chair:nth-child(3) { top: 30px; left: 10px; }
-    .chair:nth-child(4) { top: 30px; right: 10px; }
-    .chair:nth-child(5) { bottom: 30px; left: 10px; }
-    .chair:nth-child(6) { bottom: 30px; right: 10px; }
 
     .chair-inner {
       width: 100%; height: 100%;
@@ -433,19 +427,26 @@ function tekenTafel(datum) {
   const deelnemers = inschrijvingen[datum] || [];
   const vrij = 6 - deelnemers.length;
   sub.textContent = formatDatum(datum);
+  const midden = 130; // helft van 260px
+  const straal = 95;  // afstand van centrum naar stoel
+  const stoelHTML = [0,1,2,3,4,5].map(i => {
+    const hoek = (i * 60 - 90) * Math.PI / 180; // start bovenaan, elke 60°
+    const x = midden + straal * Math.cos(hoek) - 26; // -26 = helft stoelbreedte
+    const y = midden + straal * Math.sin(hoek) - 26;
+    const p = deelnemers[i];
+    return p
+      ? `<div class="chair" style="left:${x}px;top:${y}px"><div class="chair-inner bezet">
+           <span class="chair-icon">🧑</span>
+           <span class="chair-name">${escHtml(p.naam)}</span>
+           <span class="chair-spel">${escHtml(p.spel)}</span>
+         </div></div>`
+      : `<div class="chair" style="left:${x}px;top:${y}px"><div class="chair-inner"><span class="chair-icon" style="opacity:.3">🪑</span></div></div>`;
+  }).join("");
+
   view.innerHTML = `
     <div class="table-wrap">
       <div class="felt-table"><div class="felt-table-inner">Speel<br>avond</div></div>
-      ${[0,1,2,3,4,5].map(i => {
-        const p = deelnemers[i];
-        return p
-          ? `<div class="chair"><div class="chair-inner bezet">
-               <span class="chair-icon">🧑</span>
-               <span class="chair-name">${escHtml(p.naam)}</span>
-               <span class="chair-spel">${escHtml(p.spel)}</span>
-             </div></div>`
-          : `<div class="chair"><div class="chair-inner"><span class="chair-icon" style="opacity:.3">🪑</span></div></div>`;
-      }).join("")}
+      ${stoelHTML}
     </div>
     <div class="seats-count"><span>${deelnemers.length}</span>/6 bezet · <span>${vrij}</span> vrij</div>
   `;
