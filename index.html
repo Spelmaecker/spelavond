@@ -476,12 +476,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwUXbjt_GhCZ8zKn10WJmea
 
 // Beschikbare datums (pas aan naar jouw spelavonden)
 // Formaat: "YYYY-MM-DD" of laat leeg voor vrije datumkeuze
-const BESCHIKBARE_DATUMS = [
-  // Voorbeelddatums — vervang door jouw geplande avonden:
-  // "2025-01-17",
-  // "2025-01-24",
-  // "2025-02-07",
-];
+const BESCHIKBARE_DATUMS = []; // wordt geladen vanuit Sheet
 
 // =============================================
 let inschrijvingen = {}; // { "2025-01-17": [{naam, spel}, ...] }
@@ -540,6 +535,21 @@ async function laadSpellen() {
   } catch (e) {
     console.warn("Spellen laden mislukt:", e);
   }
+}
+
+await laadDatums();
+
+async function laadDatums() {
+  try {
+    const res = await fetch(`${API_URL}?actie=getDatums`);
+    const data = await res.json();
+    if (data.succes) {
+      data.datums.forEach(d => {
+        if (!BESCHIKBARE_DATUMS.includes(d)) BESCHIKBARE_DATUMS.push(d);
+      });
+      bouwDatumTabs();
+    }
+  } catch(e) { console.warn("Datums laden mislukt:", e); }
 }
 
 // =============================================
