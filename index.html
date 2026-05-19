@@ -124,7 +124,7 @@
     }
 
     .table-container { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    .table-wrap { position: relative; width: 260px; height: 260px; }
+    .table-wrap { position: relative; width: 320px; height: 320px; }
 
     .felt-table {
       position: absolute; top: 50%; left: 50%;
@@ -142,7 +142,7 @@
       text-align: center; line-height: 1.4;
     }
 
-    .chair { position: absolute; width: 52px; height: 52px; }
+    .chair { position: absolute; width: 68px; height: 68px; }
 
     .chair-inner {
       width: 100%; height: 100%; border-radius: 50%;
@@ -167,18 +167,18 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    .chair-icon { font-size: 1.4rem; line-height: 1; }
+    .chair-icon { font-size: 1.5rem; line-height: 1; }
 
     .chair-name {
-      font-size: 0.5rem; font-weight: 700; letter-spacing: 0.5px;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.3px;
       text-transform: uppercase; color: var(--gold);
-      max-width: 46px; text-align: center;
+      max-width: 62px; text-align: center;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
 
     .chair-spel {
-      font-size: 0.42rem; color: var(--muted);
-      max-width: 46px; text-align: center;
+      font-size: 0.52rem; color: var(--muted);
+      max-width: 62px; text-align: center;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
 
@@ -241,14 +241,15 @@
     .toevoegen-wrap { text-align: center; margin-bottom: 18px; }
 
     .btn-agenda {
-      width: 100%; padding: 12px;
+      display: block; width: 100%; padding: 12px;
       background: transparent;
       border: 1px solid rgba(212,160,48,0.5);
       border-radius: 10px; color: var(--gold);
       font-family: 'Lato', sans-serif;
       font-size: 0.95rem; font-weight: 700;
       cursor: pointer; transition: all 0.2s;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.5px; text-align: center;
+      text-decoration: none;
     }
     .btn-agenda:hover { background: rgba(212,160,48,0.1); border-color: var(--gold); }
 
@@ -345,9 +346,9 @@
     </button>
 
     <div id="agendaWrap" style="display:none; margin-top:12px;">
-      <button class="btn-agenda" onclick="downloadIcs()">
-        📅 Voeg toe aan mijn agenda
-      </button>
+      <a id="agendaLink" href="#" target="_blank" class="btn-agenda">
+        📅 Voeg toe aan Google Agenda
+      </a>
     </div>
   </section>
 </main>
@@ -363,38 +364,25 @@ let spellenLijst = [];
 let persoonTeller = 0;
 let agendaDatum = null;
 
-function downloadIcs() {
-  if (!agendaDatum) return;
-  const d = new Date(agendaDatum + "T20:00:00");
-  const eind = new Date(agendaDatum + "T23:00:00");
+function maakGoogleAgendaLink(datum) {
+  const start = new Date(datum + "T20:00:00");
+  const eind  = new Date(datum + "T23:00:00");
 
-  function icsDate(dt) {
+  function gcDate(dt) {
     return dt.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
   }
 
-  const spellen = (inschrijvingen[agendaDatum] || []).map(p => `${p.naam} (${p.spel})`).join(", ");
+  const deelnemers = (inschrijvingen[datum] || [])
+    .map(p => `${p.naam} (${p.spel})`).join(", ");
 
-  const ics = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Spelavond Planner//NL",
-    "BEGIN:VEVENT",
-    `DTSTART:${icsDate(d)}`,
-    `DTEND:${icsDate(eind)}`,
-    `SUMMARY:🎲 Spelavond`,
-    `DESCRIPTION:Spelletjesavond bij de host!\\nDeelnemers: ${spellen}`,
-    `LOCATION:`,
-    "END:VEVENT",
-    "END:VCALENDAR"
-  ].join("\r\n");
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: "🎲 Spelavond",
+    dates: `${gcDate(start)}/${gcDate(eind)}`,
+    details: `Spelletjesavond!\nDeelnemers: ${deelnemers}`,
+  });
 
-  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `spelavond-${agendaDatum}.ics`;
-  a.click();
-  URL.revokeObjectURL(url);
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
 function formatDatum(str) {
@@ -587,11 +575,11 @@ function tekenTafel(datum) {
   const gesloten = isGesloten(datum);
   sub.textContent = formatDatum(datum) + (gesloten ? " 🔒" : "");
 
-  const midden = 130, straal = 95;
+  const midden = 160, straal = 115;
   const stoelHTML = [0,1,2,3,4,5].map(i => {
     const hoek = (i * 60 - 90) * Math.PI / 180;
-    const x = midden + straal * Math.cos(hoek) - 26;
-    const y = midden + straal * Math.sin(hoek) - 26;
+    const x = midden + straal * Math.cos(hoek) - 34;
+    const y = midden + straal * Math.sin(hoek) - 34;
     const p = deelnemers[i];
     return p
       ? `<div class="chair" style="left:${x}px;top:${y}px"><div class="chair-inner bezet">
@@ -669,6 +657,7 @@ async function inschrijven() {
     tekenTafel(datum);
     // Toon agenda-knop
     agendaDatum = datum;
+    document.getElementById("agendaLink").href = maakGoogleAgendaLink(datum);
     document.getElementById("agendaWrap").style.display = "block";
     document.getElementById("personenContainer").innerHTML = "";
     persoonTeller = 0;
