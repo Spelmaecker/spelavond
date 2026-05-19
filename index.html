@@ -48,24 +48,17 @@
 
     .header-badge {
       display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--gold);
-      border: 1px solid var(--gold);
-      padding: 6px 18px;
-      border-radius: 40px;
-      margin-bottom: 20px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--gold);
+      padding: 6px 18px; border-radius: 40px; margin-bottom: 20px;
     }
 
     h1 {
       font-family: 'Playfair Display', serif;
       font-size: clamp(2.4rem, 6vw, 4rem);
-      font-weight: 900;
-      color: var(--cream);
-      line-height: 1.1;
-      margin-bottom: 12px;
+      font-weight: 900; color: var(--cream);
+      line-height: 1.1; margin-bottom: 12px;
     }
 
     h1 span { color: var(--gold); }
@@ -78,13 +71,10 @@
     }
 
     main {
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: 1200px; margin: 0 auto;
       padding: 0 24px 80px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: start;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 40px; align-items: start;
       position: relative; z-index: 1;
     }
 
@@ -94,23 +84,18 @@
       background: var(--surface);
       border: 1px solid rgba(212,160,48,0.2);
       border-radius: var(--radius);
-      padding: 32px;
-      position: relative;
-      overflow: hidden;
+      padding: 32px; position: relative; overflow: hidden;
     }
 
     .panel::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
       height: 3px;
       background: linear-gradient(90deg, transparent, var(--gold), transparent);
     }
 
     .panel-title {
       font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      color: var(--gold-light);
-      margin-bottom: 8px;
+      font-size: 1.4rem; color: var(--gold-light); margin-bottom: 8px;
     }
 
     .panel-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; }
@@ -118,15 +103,11 @@
     .date-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
 
     .date-tab {
-      padding: 8px 16px;
-      border-radius: 40px;
+      padding: 8px 16px; border-radius: 40px;
       border: 1px solid rgba(212,160,48,0.3);
-      background: transparent;
-      color: var(--muted);
-      font-family: 'Lato', sans-serif;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
+      background: transparent; color: var(--muted);
+      font-family: 'Lato', sans-serif; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s;
     }
 
     .date-tab:hover { border-color: var(--gold); color: var(--gold); }
@@ -137,28 +118,22 @@
     .gesloten-banner {
       background: rgba(139,32,32,0.2);
       border: 1px solid rgba(139,32,32,0.5);
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-size: 0.85rem;
-      color: #e08080;
-      margin-bottom: 16px;
-      text-align: center;
+      border-radius: 10px; padding: 10px 16px;
+      font-size: 0.85rem; color: #e08080;
+      margin-bottom: 16px; text-align: center;
     }
 
     .table-container { display: flex; flex-direction: column; align-items: center; gap: 8px; }
     .table-wrap { position: relative; width: 260px; height: 260px; }
 
     .felt-table {
-      position: absolute;
-      top: 50%; left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       width: 140px; height: 140px;
       background: radial-gradient(circle at 40% 35%, var(--felt), var(--felt2));
-      border-radius: 50%;
-      border: 4px solid #4a7a4a;
+      border-radius: 50%; border: 4px solid #4a7a4a;
       box-shadow: 0 0 0 6px #1a2e1a, 0 8px 32px rgba(0,0,0,0.6);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 2;
+      display: flex; align-items: center; justify-content: center; z-index: 2;
     }
 
     .felt-table-inner {
@@ -170,8 +145,7 @@
     .chair { position: absolute; width: 52px; height: 52px; }
 
     .chair-inner {
-      width: 100%; height: 100%;
-      border-radius: 50%;
+      width: 100%; height: 100%; border-radius: 50%;
       border: 2px solid rgba(212,160,48,0.3);
       background: var(--surface2);
       display: flex; flex-direction: column;
@@ -212,6 +186,7 @@
     .seats-count span { color: var(--gold-light); font-weight: 700; }
     .no-date-msg { text-align: center; padding: 20px; color: var(--muted); font-size: 0.85rem; }
 
+    /* Form */
     .form-group { margin-bottom: 18px; }
 
     label {
@@ -232,15 +207,67 @@
     input:focus, select:focus { outline: none; border-color: var(--gold); }
     input::placeholder { color: var(--muted); }
     select option { background: var(--surface2); }
-    .custom-spel-wrap { margin-top: 10px; }
+
+    /* Multi-persoon */
+    .persoon-rij {
+      background: var(--surface2);
+      border: 1px solid rgba(212,160,48,0.15);
+      border-radius: 10px; padding: 14px; margin-bottom: 10px;
+    }
+
+    .rij-header {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .persoon-rij input, .persoon-rij select {
+      background: var(--bg); margin-bottom: 8px;
+    }
+
+    .persoon-rij input:last-child, .persoon-rij select:last-child { margin-bottom: 0; }
+
+    .custom-spel-wrap { margin-top: 8px; }
+
+    .verwijder-btn {
+      background: none; border: none;
+      color: var(--muted); cursor: pointer;
+      font-size: 1rem; padding: 2px 6px;
+      border-radius: 4px; transition: color 0.2s;
+    }
+    .verwijder-btn:hover { color: #e08080; }
+
+    .toevoegen-wrap { text-align: center; margin-bottom: 18px; }
+
+    .btn-agenda {
+      width: 100%; padding: 12px;
+      background: transparent;
+      border: 1px solid rgba(212,160,48,0.5);
+      border-radius: 10px; color: var(--gold);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .btn-agenda:hover { background: rgba(212,160,48,0.1); border-color: var(--gold); }
+
+    .btn-small {
+      padding: 8px 18px; background: transparent;
+      border: 1px solid rgba(212,160,48,0.4);
+      border-radius: 8px; color: var(--gold);
+      font-family: 'Lato', sans-serif; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-small:hover { background: rgba(212,160,48,0.1); border-color: var(--gold); }
 
     .btn {
       width: 100%; padding: 14px;
       background: linear-gradient(135deg, var(--gold), #b8861e);
-      border: none; border-radius: 10px;
-      color: var(--bg); font-family: 'Playfair Display', serif;
-      font-size: 1.1rem; font-weight: 700; cursor: pointer;
-      transition: all 0.2s; margin-top: 8px;
+      border: none; border-radius: 10px; color: var(--bg);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; margin-top: 8px;
     }
 
     .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,160,48,0.3); }
@@ -274,9 +301,9 @@
 <body>
 
 <header>
-  <div class="header-badge">🎲 Bordspellen op zolder 🎲</div>
+  <div class="header-badge">🎲 Bordspellenavond</div>
   <h1>Wie schuift er<br><span>mee aan tafel?</span></h1>
-  <p class="subtitle">Schrijf je in en kies één of meerdere spelletjesavonden</p>
+  <p class="subtitle">Schrijf je in en kies een spelletjesavond</p>
   <div class="gold-line"></div>
 </header>
 
@@ -294,15 +321,10 @@
 
   <section class="panel">
     <h2 class="panel-title">Inschrijven</h2>
-    <p class="panel-sub">Vul je gegevens in en reserveer je stoel</p>
+    <p class="panel-sub">Vul je gegevens in en reserveer je stoel(en)</p>
 
     <div id="geslotenBanner" class="gesloten-banner" style="display:none">
       🔒 Inschrijvingen voor deze avond zijn gesloten.
-    </div>
-
-    <div class="form-group">
-      <label for="naam">Jouw naam</label>
-      <input type="text" id="naam" placeholder="Voornaam of bijnaam" maxlength="40" />
     </div>
 
     <div class="form-group">
@@ -312,20 +334,21 @@
       </select>
     </div>
 
-    <div class="form-group">
-      <label for="spelKeuze">Spel</label>
-      <select id="spelKeuze">
-        <option value="">— Kies een spel —</option>
-        <option value="__custom__">✏️ Zelf invullen…</option>
-      </select>
-      <div class="custom-spel-wrap" id="customSpelWrap" style="display:none">
-        <input type="text" id="customSpel" placeholder="Naam van het spel" maxlength="60" />
-      </div>
+    <div id="personenContainer"></div>
+
+    <div class="toevoegen-wrap">
+      <button class="btn-small" onclick="voegPersoonToe()">+ Persoon toevoegen</button>
     </div>
 
     <button class="btn" id="inschrijfBtn" onclick="inschrijven()">
-      Reserveer mijn stoel 🪑
+      Reserveer stoelen 🪑
     </button>
+
+    <div id="agendaWrap" style="display:none; margin-top:12px;">
+      <button class="btn-agenda" onclick="downloadIcs()">
+        📅 Voeg toe aan mijn agenda
+      </button>
+    </div>
   </section>
 </main>
 
@@ -335,8 +358,44 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwUXbjt_GhCZ8zKn10WJmearsqempa-FIyNIiWmLVKktuXqoIcGZ66mwWixv6Ffmg50Qg/exec";
 
 let inschrijvingen = {};
-let beschikbareDatums = []; // [{ datum, gesloten }, ...]
-let geselecteerdeDatum = null;
+let beschikbareDatums = [];
+let spellenLijst = [];
+let persoonTeller = 0;
+let agendaDatum = null;
+
+function downloadIcs() {
+  if (!agendaDatum) return;
+  const d = new Date(agendaDatum + "T20:00:00");
+  const eind = new Date(agendaDatum + "T23:00:00");
+
+  function icsDate(dt) {
+    return dt.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  }
+
+  const spellen = (inschrijvingen[agendaDatum] || []).map(p => `${p.naam} (${p.spel})`).join(", ");
+
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Spelavond Planner//NL",
+    "BEGIN:VEVENT",
+    `DTSTART:${icsDate(d)}`,
+    `DTEND:${icsDate(eind)}`,
+    `SUMMARY:🎲 Spelavond`,
+    `DESCRIPTION:Spelletjesavond bij de host!\\nDeelnemers: ${spellen}`,
+    `LOCATION:`,
+    "END:VEVENT",
+    "END:VCALENDAR"
+  ].join("\r\n");
+
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `spelavond-${agendaDatum}.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 function formatDatum(str) {
   const d = new Date(str + "T00:00:00");
@@ -364,41 +423,111 @@ async function apiFetch(actie) {
   return res.json();
 }
 
+// ===== PERSONEN =====
+
+function maakSpelSelect(id) {
+  const sel = document.createElement("select");
+  sel.id = "spel-" + id;
+  const leeg = document.createElement("option");
+  leeg.value = ""; leeg.textContent = "— Kies een spel —";
+  sel.appendChild(leeg);
+  spellenLijst.forEach(spel => {
+    const opt = document.createElement("option");
+    opt.value = spel; opt.textContent = spel;
+    sel.appendChild(opt);
+  });
+  const custom = document.createElement("option");
+  custom.value = "__custom__"; custom.textContent = "✏️ Zelf invullen…";
+  sel.appendChild(custom);
+  sel.addEventListener("change", () => {
+    document.getElementById("customSpelWrap-" + id).style.display =
+      sel.value === "__custom__" ? "block" : "none";
+  });
+  return sel;
+}
+
+function voegPersoonToe() {
+  const datum = document.getElementById("datumKeuze").value;
+  const bezet = datum ? (inschrijvingen[datum] || []).length : 0;
+  const huidig = document.querySelectorAll(".persoon-rij").length;
+  if (bezet + huidig >= 6) return toonToast("Maximaal 6 stoelen per avond.", true);
+
+  persoonTeller++;
+  const id = persoonTeller;
+  const container = document.getElementById("personenContainer");
+
+  const rij = document.createElement("div");
+  rij.className = "persoon-rij";
+  rij.dataset.id = id;
+
+  const header = document.createElement("div");
+  header.className = "rij-header";
+  header.innerHTML = `<span>Persoon ${container.children.length + 1}</span>`;
+
+  if (container.children.length > 0) {
+    const verwijder = document.createElement("button");
+    verwijder.className = "verwijder-btn";
+    verwijder.textContent = "✕";
+    verwijder.onclick = () => { rij.remove(); hernummerPersonen(); };
+    header.appendChild(verwijder);
+  }
+
+  const naamInput = document.createElement("input");
+  naamInput.type = "text";
+  naamInput.id = "naam-" + id;
+  naamInput.placeholder = "Naam";
+  naamInput.maxLength = 40;
+
+  const spelSelect = maakSpelSelect(id);
+
+  const customWrap = document.createElement("div");
+  customWrap.className = "custom-spel-wrap";
+  customWrap.id = "customSpelWrap-" + id;
+  customWrap.style.display = "none";
+  const customInput = document.createElement("input");
+  customInput.type = "text";
+  customInput.id = "customSpelInput-" + id;
+  customInput.placeholder = "Naam van het spel";
+  customInput.maxLength = 60;
+  customWrap.appendChild(customInput);
+
+  rij.appendChild(header);
+  rij.appendChild(naamInput);
+  rij.appendChild(spelSelect);
+  rij.appendChild(customWrap);
+  container.appendChild(rij);
+}
+
+function hernummerPersonen() {
+  document.querySelectorAll(".persoon-rij").forEach((rij, i) => {
+    rij.querySelector(".rij-header span").textContent = "Persoon " + (i + 1);
+  });
+}
+
+// ===== LADEN =====
+
 async function laadAlles() {
-  // Laad spellen
   try {
     const data = await apiFetch("getSpellen");
-    if (data.succes && data.spellen) {
-      const sel = document.getElementById("spelKeuze");
-      data.spellen.forEach(spel => {
-        const opt = document.createElement("option");
-        opt.value = spel;
-        opt.textContent = spel;
-        sel.insertBefore(opt, sel.lastElementChild);
-      });
-    }
+    if (data.succes && data.spellen) spellenLijst = data.spellen;
   } catch(e) { console.warn("Spellen laden mislukt:", e); }
 
-  // Laad datums (nu met gesloten-vlag)
   try {
     const data = await apiFetch("getDatums");
     if (data.succes && data.datums) {
-      // Ondersteunt zowel oud formaat (strings) als nieuw formaat ({datum, gesloten})
       beschikbareDatums = data.datums.map(d =>
         typeof d === "string" ? { datum: d, gesloten: false } : d
       );
     }
   } catch(e) { console.warn("Datums laden mislukt:", e); }
 
-  // Laad inschrijvingen
   try {
     const data = await apiFetch("getInschrijvingen");
     if (data.succes) {
       inschrijvingen = data.datums || {};
       Object.keys(inschrijvingen).forEach(d => {
-        if (!beschikbareDatums.find(x => x.datum === d)) {
+        if (!beschikbareDatums.find(x => x.datum === d))
           beschikbareDatums.push({ datum: d, gesloten: false });
-        }
       });
     }
   } catch(e) { console.warn("Inschrijvingen laden mislukt:", e); }
@@ -406,6 +535,7 @@ async function laadAlles() {
   beschikbareDatums.sort((a, b) => a.datum.localeCompare(b.datum));
   bouwDatumTabs();
   vulDatumSelect();
+  voegPersoonToe(); // start met 1 persoon
 }
 
 function bouwDatumTabs() {
@@ -439,17 +569,13 @@ function vulDatumSelect() {
 }
 
 function selecteerDatum(datum) {
-  geselecteerdeDatum = datum;
   document.querySelectorAll(".date-tab").forEach(t => {
     t.classList.toggle("active", t.dataset.datum === datum && !isGesloten(datum));
   });
   document.getElementById("datumKeuze").value = datum;
-
-  // Toon/verberg gesloten banner en knop
   const gesloten = isGesloten(datum);
   document.getElementById("geslotenBanner").style.display = gesloten ? "block" : "none";
   document.getElementById("inschrijfBtn").disabled = gesloten;
-
   tekenTafel(datum);
 }
 
@@ -459,11 +585,9 @@ function tekenTafel(datum) {
   const deelnemers = inschrijvingen[datum] || [];
   const vrij = 6 - deelnemers.length;
   const gesloten = isGesloten(datum);
-
   sub.textContent = formatDatum(datum) + (gesloten ? " 🔒" : "");
 
-  const midden = 130;
-  const straal = 95;
+  const midden = 130, straal = 95;
   const stoelHTML = [0,1,2,3,4,5].map(i => {
     const hoek = (i * 60 - 90) * Math.PI / 180;
     const x = midden + straal * Math.cos(hoek) - 26;
@@ -475,7 +599,9 @@ function tekenTafel(datum) {
            <span class="chair-name">${escHtml(p.naam)}</span>
            <span class="chair-spel">${escHtml(p.spel)}</span>
          </div></div>`
-      : `<div class="chair" style="left:${x}px;top:${y}px"><div class="chair-inner"><span class="chair-icon" style="opacity:.3">${gesloten ? "🔒" : "🪑"}</span></div></div>`;
+      : `<div class="chair" style="left:${x}px;top:${y}px"><div class="chair-inner">
+           <span class="chair-icon" style="opacity:.3">${gesloten ? "🔒" : "🪑"}</span>
+         </div></div>`;
   }).join("");
 
   view.innerHTML = `
@@ -487,54 +613,71 @@ function tekenTafel(datum) {
   `;
 }
 
-async function inschrijven() {
-  const naam = document.getElementById("naam").value.trim();
-  const datum = document.getElementById("datumKeuze").value;
-  const spelSel = document.getElementById("spelKeuze").value;
-  const spelCustom = document.getElementById("customSpel").value.trim();
-  const spel = spelSel === "__custom__" ? spelCustom : spelSel;
+// ===== INSCHRIJVEN =====
 
-  if (!naam) return toonToast("Vul je naam in.", true);
+async function inschrijven() {
+  const datum = document.getElementById("datumKeuze").value;
   if (!datum) return toonToast("Kies een datum.", true);
-  if (!spel) return toonToast("Kies of vul een spel in.", true);
   if (isGesloten(datum)) return toonToast("Inschrijvingen zijn gesloten.", true);
+
+  const rijen = document.querySelectorAll(".persoon-rij");
+  if (rijen.length === 0) return toonToast("Voeg minstens één persoon toe.", true);
+
+  const personen = [];
+  for (const rij of rijen) {
+    const id = rij.dataset.id;
+    const naam = document.getElementById("naam-" + id).value.trim();
+    const spelSel = document.getElementById("spel-" + id).value;
+    const spelCustom = document.getElementById("customSpelInput-" + id)?.value.trim() || "";
+    const spel = spelSel === "__custom__" ? spelCustom : spelSel;
+    if (!naam) return toonToast("Vul alle namen in.", true);
+    if (!spel) return toonToast(`Kies een spel voor ${naam}.`, true);
+    personen.push({ naam, spel });
+  }
+
+  const bezet = (inschrijvingen[datum] || []).length;
+  if (bezet + personen.length > 6) {
+    return toonToast(`Nog maar ${6 - bezet} stoel(en) vrij.`, true);
+  }
 
   const btn = document.getElementById("inschrijfBtn");
   btn.disabled = true;
   btn.innerHTML = "Bezig… <span class='loader'></span>";
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ naam, datum, spel }),
-    });
-    const data = await res.json();
-    if (data.succes) {
-      toonToast("🎉 " + data.bericht);
-      if (!inschrijvingen[datum]) inschrijvingen[datum] = [];
-      inschrijvingen[datum].push({ naam, spel });
-      tekenTafel(datum);
-      const stoelen = document.querySelectorAll(".chair-inner");
-      const idx = inschrijvingen[datum].length - 1;
-      if (stoelen[idx]) stoelen[idx].classList.add("nieuw");
-      document.getElementById("naam").value = "";
-      document.getElementById("spelKeuze").value = "";
-      document.getElementById("customSpelWrap").style.display = "none";
-    } else {
-      toonToast(data.fout || "Inschrijving mislukt.", true);
+  let succes = 0;
+  for (const persoon of personen) {
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ naam: persoon.naam, datum, spel: persoon.spel }),
+      });
+      const data = await res.json();
+      if (data.succes) {
+        if (!inschrijvingen[datum]) inschrijvingen[datum] = [];
+        inschrijvingen[datum].push({ naam: persoon.naam, spel: persoon.spel });
+        succes++;
+      } else {
+        toonToast(data.fout || `Fout bij ${persoon.naam}.`, true);
+      }
+    } catch(e) {
+      toonToast(`Verbindingsfout bij ${persoon.naam}.`, true);
     }
-  } catch(e) {
-    toonToast("Verbindingsfout. Probeer opnieuw.", true);
+  }
+
+  if (succes > 0) {
+    toonToast(succes === 1 ? "🎉 1 persoon ingeschreven!" : `🎉 ${succes} personen ingeschreven!`);
+    tekenTafel(datum);
+    // Toon agenda-knop
+    agendaDatum = datum;
+    document.getElementById("agendaWrap").style.display = "block";
+    document.getElementById("personenContainer").innerHTML = "";
+    persoonTeller = 0;
+    voegPersoonToe();
   }
 
   btn.disabled = false;
-  btn.innerHTML = "Reserveer mijn stoel 🪑";
+  btn.innerHTML = "Reserveer stoelen 🪑";
 }
-
-document.getElementById("spelKeuze").addEventListener("change", e => {
-  document.getElementById("customSpelWrap").style.display =
-    e.target.value === "__custom__" ? "block" : "none";
-});
 
 document.getElementById("datumKeuze").addEventListener("change", e => {
   if (e.target.value) selecteerDatum(e.target.value);
