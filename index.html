@@ -304,7 +304,7 @@
 <header>
   <div class="header-badge">🎲 Bordspellen op zolder 🎲</div>
   <h1>Wie schuift er<br><span>mee aan tafel?</span></h1>
-  <p class="subtitle">Schrijf je in en kies een spelletjesavond</p>
+  <p class="subtitle">Schrijf je in en kies een spelletje</p>
   <div class="gold-line"></div>
 </header>
 
@@ -393,16 +393,18 @@ function formatDatum(str) {
 }
 
 function geslachtIcoon(naam) {
-  const mannelijk = ["aaron","adam","alexis","arthur","axel","thomas van assche","baptiste","benjamin","boris","bram","bryan","charles","christophe","daan","david","dieter","dries","dylan","elias","emile","ethan","ferre","finn","florian","franky","frederic","gauthier","gianni","hamza","hannes","ibe","jan","jasper","jef","jeffrey","jens","jeroen","jesse","jonas","jonathan","joris","jules","julien","kobe","lars","lasse","lasse","lenn","lennart","lenny","lenz","lev","levi","liam","lien","lore","lotte","louis","lowie","luca","lucas","lukas","mathias","mathis","matteo","matthias","maxim","maxime","maximo","milan","mo","mohamed","nathan","nico","nicolas","niels","noah","noel","nore","obbe","oliver","ollie","pieter","quinten","rafael","ramon","raph","raphael","remi","reuben","rik","robin","robbe","robbe","ruben","sander","senne","siebe","simon","stan","stef","stefan","stijn","thomas","tibo","tijs","tim","timo","timon","tom","tomas","victor","warre","wout","xander","yannick","yorick","younes"];
-  const vrouwelijk = ["amber","sigrid parmentier","amy","an","anna","axelle","ayse","bo","camille","charlotte","femke","elena","elien","elisa","elise","elle","ellie","emilia","emma","fien","fleur","floor","frauke","hailey","hana","hanna","hannah","ines","ines","jana","julie","juliette","kaat","karen","katrien","laura","laure","lauren","layla","lea","lena","lies","lieselot","lien","lisa","lore","lotte","louise","luna","lien","manon","marie","mathilde","maya","nathalie","noor","nora","olivia","pauline","roos","sara","sarah","silke","sofie","stien","tine","tinne","yasmine","zoë","zoe"];
+  const mannelijk = ["aaron","adam","alexis","arthur","axel","ayoub","baptiste","benjamin","boris","bram","bryan","charles","christophe","daan","david","dieter","dries","dylan","elias","emile","ethan","ferre","finn","florian","franky","frederic","gauthier","gianni","hamza","hannes","ibe","jan","jasper","jef","jeffrey","jens","jeroen","jesse","jonas","jonathan","joris","jules","julien","kobe","lars","lasse","lasse","lenn","lennart","lenny","lenz","lev","levi","liam","lien","lore","lotte","louis","lowie","luca","lucas","lukas","mathias","mathis","matteo","matthias","maxim","maxime","maximo","milan","mo","mohamed","nathan","nico","nicolas","niels","noah","noel","nore","obbe","oliver","ollie","pieter","quinten","rafael","ramon","raph","raphael","remi","reuben","rik","robin","robbe","robbe","ruben","sander","senne","siebe","simon","stan","stef","stefan","stijn","thomas","tibo","tijs","tim","timo","timon","tom","tomas","victor","warre","wout","xander","yannick","yorick","younes"];
+  const vrouwelijk = ["amber","amelie","sigrid parmentier","an","anna","axelle","ayse","bo","camille","charlotte","chiara","elena","elien","elisa","elise","elle","ellie","emilia","emma","fien","fleur","floor","frauke","hailey","hana","hanna","hannah","ines","ines","jana","julie","juliette","kaat","karen","katrien","laura","laure","lauren","layla","lea","lena","lies","lieselot","lien","lisa","lore","lotte","louise","luna","lien","manon","marie","mathilde","maya","nathalie","noor","nora","olivia","pauline","roos","sara","sarah","silke","sofie","stien","tine","tinne","yasmine","zoë","zoe"];
 
   const voornaam = naam.trim().split(" ")[0].toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // verwijder accenten
 
   if (mannelijk.includes(voornaam)) return "👨";
   if (vrouwelijk.includes(voornaam)) return "👩";
-  return "🧑"; // neutraal voor onbekende namen
+  return "🧑";
 }
+
+function escHtml(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
