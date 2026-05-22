@@ -302,9 +302,9 @@
 <body>
 
 <header>
-  <div class="header-badge">🎲 Bordspellen op zolder 🎲</div>
+  <div class="header-badge">🎲 Bordspellenavond</div>
   <h1>Wie schuift er<br><span>mee aan tafel?</span></h1>
-  <p class="subtitle">Schrijf je in en kies een spelletje?</p>
+  <p class="subtitle">Schrijf je in en kies een spelletjesavond</p>
   <div class="gold-line"></div>
 </header>
 
@@ -427,7 +427,7 @@ function maakSpelSelect(id) {
     sel.appendChild(opt);
   });
   const custom = document.createElement("option");
-  custom.value = "__custom__"; custom.textContent = "✏️ Ik breng het volgende spel mee...";
+  custom.value = "__custom__"; custom.textContent = "✏️ Zelf invullen…";
   sel.appendChild(custom);
   sel.addEventListener("change", () => {
     document.getElementById("customSpelWrap-" + id).style.display =
@@ -507,7 +507,14 @@ async function laadAlles() {
     if (data.succes && data.datums) {
       beschikbareDatums = data.datums
         .map(d => typeof d === "string" ? { datum: d, gesloten: false } : d)
-        .filter(d => d && d.datum && /^\d{4}-\d{2}-\d{2}$/.test(d.datum));
+        .filter(d => {
+          if (!d || !d.datum || !/^\d{4}-\d{2}-\d{2}$/.test(d.datum)) return false;
+          // Verberg voorbije datums
+          const p = d.datum.split("-");
+          const datumObj = new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2]));
+          const vandaag = new Date(); vandaag.setHours(0,0,0,0);
+          return datumObj >= vandaag;
+        });
     }
   } catch(e) { console.warn("Datums laden mislukt:", e); }
 
